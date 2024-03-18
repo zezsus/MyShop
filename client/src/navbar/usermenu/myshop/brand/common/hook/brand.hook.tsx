@@ -8,6 +8,8 @@ export const useGetListBrand = () => {
   return useQuery({
     queryKey: ["getBrand"],
     queryFn: getListBrand,
+    staleTime: 0,
+    cacheTime: 2 * 60 * 1000,
   });
 };
 

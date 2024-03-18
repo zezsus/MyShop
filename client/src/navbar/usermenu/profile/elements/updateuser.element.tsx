@@ -1,82 +1,66 @@
 /** @format */
 
-import { Box, Button, TextField } from "@mui/material";
-import { styleBox } from "../common/assets/profile";
-import { FormBody, FormFooter } from "../../common/assets/formstyle";
-import { useState } from "react";
-import { IUser } from "@/auth/common/interfaces";
+import { Button, TextField } from "@mui/material";
+import { FormBody, FormFooter, UserForm } from "../../common/assets/formstyle";
 import { useUpdateUser } from "../common/hook/profile.hook";
 import { setUpdateUser } from "../common/redux/profileSlice";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/app/store";
-import { useGetUserData } from "@/auth/common/hook";
-import {
-  setColor,
-  setIsMessage,
-  setMessage,
-} from "@/auth/common/redux/userSlice";
+import { useGetUserData } from "@/common/hook/user.hook";
+import { setColor, setIsMessage, setMessage } from "@/common/redux/userSlice";
+import { useForm } from "react-hook-form";
 
 const UpdateUserElement = ({ userData }: any) => {
-  const [userInfo, setUserInfo] = useState<IUser>(userData);
-
+  const { register, handleSubmit, reset } = useForm({
+    defaultValues: userData,
+  });
   const dispatch = useDispatch<AppDispatch>();
 
-  const updateUserMutation = useUpdateUser(userInfo.id);
+  const updateUserMutation = useUpdateUser(userData.id);
   const getUserData = useGetUserData();
 
-  const onChangeUserInfo = (e: any) => {
-    setUserInfo({ ...userInfo, [e.target.name]: e.target.value });
-  };
-  const handleSave = () => {
-    const updateUser = {
-      ...userInfo,
-    };
-    updateUserMutation.mutate(updateUser, {
+  const handleSave = (data: any) => {
+    updateUserMutation.mutate(data, {
       onSuccess: () => {
         getUserData.refetch();
+        dispatch(setIsMessage(true));
+        dispatch(setMessage("Update user success."));
+        dispatch(setColor("success"));
+        dispatch(setUpdateUser(false));
+        reset();
       },
     });
-    dispatch(setIsMessage(true));
-    dispatch(setMessage("Update user success."));
-    dispatch(setColor("success"));
-    dispatch(setUpdateUser(false));
   };
 
   return (
-    <Box width={500} sx={styleBox}>
+    <UserForm onSubmit={handleSubmit(handleSave)}>
       <FormBody>
         <TextField
           label='Name'
           variant='outlined'
           size='small'
-          value={userInfo.username}
-          name='username'
-          onChange={onChangeUserInfo}
+          {...register("username")}
         />
         <TextField
           label='Address'
           variant='outlined'
           size='small'
-          value={userInfo.address}
-          name='address'
-          onChange={onChangeUserInfo}
+          {...register("address")}
         />
         <TextField
           label='Phone Number'
           size='small'
           variant='outlined'
-          value={userInfo.phoneNumber}
-          name='phoneNumber'
-          onChange={onChangeUserInfo}
+          {...register("phoneNumber")}
         />
       </FormBody>
       <hr></hr>
       <FormFooter mt={5}>
-        <Button variant='contained' color='warning' onClick={handleSave}>
+        <Button type='submit' variant='contained' color='warning'>
           Save
         </Button>
       </FormFooter>
-    </Box>
+    </UserForm>
   );
 };
 

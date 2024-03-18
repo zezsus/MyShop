@@ -9,9 +9,4 @@ export const Profile = styled(Box)({
   transform: "translate(-50%, -50%)",
 });
 
-export const styleBox = {
-  boxShadow: 10,
-  py: 5,
-  px: 3,
-  borderRadius: 2,
-};
+

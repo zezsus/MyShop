@@ -1,8 +1,7 @@
 /** @format */
 
-import { Box, Button, Typography } from "@mui/material";
-import { styleBox } from "../common/assets/profile";
-import { FormBody, FormFooter } from "../../common/assets/formstyle";
+import { Button, Typography } from "@mui/material";
+import { FormBody, FormFooter, UserForm } from "../../common/assets/formstyle";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/app/store";
 import {
@@ -14,7 +13,7 @@ const GetUserInfoElement = ({ userData }: any) => {
   const dispatch = useDispatch<AppDispatch>();
 
   return (
-    <Box width={500} sx={styleBox}>
+    <UserForm>
       <FormBody>
         <Typography variant='body1'>name: {userData?.username}</Typography>
         <Typography variant='body1'>address:{userData?.address}</Typography>
@@ -36,7 +35,7 @@ const GetUserInfoElement = ({ userData }: any) => {
           Change Password
         </Button>
       </FormFooter>
-    </Box>
+    </UserForm>
   );
 };
 

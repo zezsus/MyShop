@@ -8,12 +8,14 @@ import {
   getListProduct,
   postProduct,
 } from "../services";
-import { IProduct } from "../interface";
+import { IProduct } from "@/common/interfaces/product.interface";
 
 export const useGetProductData = () => {
   return useQuery({
     queryKey: ["getProductData"],
     queryFn: getListProduct,
+    staleTime: 0,
+    cacheTime: 2 * 60 * 1000,
   });
 };
 
@@ -31,7 +33,8 @@ export const useEditProductData = (id: string) => {
   return useMutation(
     (productValue: IProduct) => editProduct(productValue, id),
     {
-      onSuccess: () => {
+      onSuccess: (data) => {
+        queryClient.setQueryData(["getProductData", { id: id }], data);
         queryClient.invalidateQueries(["getProductData"]);
       },
     }
@@ -51,5 +54,7 @@ export const useGetProductDetailData = (id: string) => {
   return useQuery({
     queryKey: ["productDetailData", id],
     queryFn: () => detailProdut(id),
+    staleTime: 0,
+    cacheTime: 2 * 60 * 1000,
   });
 };

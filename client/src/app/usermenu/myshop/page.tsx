@@ -1,7 +1,7 @@
 /** @format */
 "use client";
 
-import MyProductComponent from "@/navbar/usermenu/myshop/components/myproduct.component";
+import MyProductComponent from "@/navbar/usermenu/myshop/myshops/components/myproduct.component";
 
 const MyShopPage = () => {
   return <MyProductComponent />;

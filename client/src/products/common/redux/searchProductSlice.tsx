@@ -4,10 +4,10 @@ import { createSlice } from "@reduxjs/toolkit";
 import { ISearchProductState } from "../interface";
 
 const initialState: ISearchProductState = {
-  searchName: "",
+  searchName: null,
   selectedType: "",
   selectedPrice: "",
-
+  isSlider: true,
 };
 
 export const searchProductSlice = createSlice({
@@ -23,10 +23,13 @@ export const searchProductSlice = createSlice({
     setSearchPrice: (state, action) => {
       state.selectedPrice = action.payload;
     },
+    setIsSlider: (state, action) => {
+      state.isSlider = action.payload;
+    },
   },
 });
 
-export const { setSearchName, setSearchType, setSearchPrice } =
+export const { setSearchName, setSearchType, setSearchPrice, setIsSlider } =
   searchProductSlice.actions;
 
 export default searchProductSlice.reducer;

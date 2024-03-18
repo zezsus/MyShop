@@ -1,13 +1,12 @@
 /** @format */
 
-import { Box, Card, Typography, styled } from "@mui/material";
+import { Box, Typography, styled } from "@mui/material";
 
-export const ProductDetail = styled(Card)({
+export const ProductDetail = styled(Box)({
   boxSizing: "border-box",
   maxHeight: "83vh",
-  padding: "0.5rem",
+  padding: "1rem",
   overflow: "auto",
-  boxShadow: "none",
 });
 
 export const ContentProduct = styled(Box)({
@@ -15,8 +14,9 @@ export const ContentProduct = styled(Box)({
   gap: "2rem",
 });
 
-export const Rating = styled(Typography)({
+export const RatingNumber = styled(Typography)({
   display: "flex",
   alignItems: "center",
   gap: "0.2rem",
+  color: "#ee4d2d",
 });

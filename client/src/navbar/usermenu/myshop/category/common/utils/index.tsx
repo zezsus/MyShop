@@ -1,8 +1,9 @@
 /** @format */
 
-import { IBrand } from "../interfaces/category.interface";
+import { ICategory } from "../interfaces/category.interface";
 
-export const validataSchemas = (schemas: any, data: IBrand) => {
+
+export const validataSchemas = (schemas: any, data: ICategory) => {
   try {
     return schemas.validate(data);
   } catch (error) {

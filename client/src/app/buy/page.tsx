@@ -1,6 +1,7 @@
 /** @format */
+"use client";
 
-import ProductBuyComponent from "@/products/buy/components/buy.component";
+import ProductBuyComponent from "@/order/buy/components/buy.component";
 
 const BuyPage = () => {
   return <ProductBuyComponent />;

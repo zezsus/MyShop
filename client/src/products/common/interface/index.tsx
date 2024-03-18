@@ -1,7 +1,6 @@
 /** @format */
 
-import { InferType } from "yup";
-import { productSchemas } from "../schemas/productsSchemas";
+import { IProduct } from "@/common/interfaces/product.interface";
 
 export interface IProductState {
   buyItem: Array<IProduct>;
@@ -10,21 +9,8 @@ export interface IProductState {
 }
 
 export interface ISearchProductState {
-  searchName: string;
+  searchName: IProduct[] | null;
   selectedType: string;
   selectedPrice: string;
-}
-
-export type IProduct = InferType<typeof productSchemas>;
-
-export interface ICartItem {
-  id: string;
-  title: string;
-  description: string;
-  price: number;
-  rating: number;
-  brand: string;
-  category: string;
-  thumbnail: string;
-  userId: string;
+  isSlider: boolean;
 }

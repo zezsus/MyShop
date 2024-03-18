@@ -7,7 +7,7 @@ import {
   AuthForm,
   AuthHeader,
   Div,
-} from "@/auth/common/assets/authstyle";
+} from "@/auth/common/assets/auth.style";
 import {
   Box,
   Button,
@@ -19,27 +19,32 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useGetUserData, usePostNewtUser } from "../common/hook";
-import { stylePassword } from "../common/assets/signupstyle";
-import { IUser } from "../common/interfaces";
-import { setColor, setIsMessage, setMessage } from "../common/redux/userSlice";
+import {
+  SignUpFormLeft,
+  SignUpFormRight,
+  stylePassword,
+} from "../common/assets/signup.style";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/app/store";
 import ToastMessageComponent from "@/components/toasmessage.component";
 import { v4 as uuidv4 } from "uuid";
+import { usePostNewtUser } from "../common/hook";
+import { useGetUserData } from "@/common/hook/user.hook";
+import { setColor, setIsMessage, setMessage } from "@/common/redux/userSlice";
+import { IUser } from "@/common/interfaces/user.interface";
+import { FieldValues, useForm } from "react-hook-form";
 
 const SignUpPage = () => {
-  const [email, setEmail] = useState<string>("");
-  const [username, setUsername] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [comfirmPassword, setComfirmPassword] = useState<string>("");
+  const { register, handleSubmit, reset } = useForm();
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
   const postUser = usePostNewtUser();
   const listUser = useGetUserData();
 
-  const handleSignUp = async () => {
+  const handleSignUp = async (data: FieldValues) => {
+    const { username, email, password, comfirmPassword } = data;
+
     if (!username || !email || !password || !comfirmPassword) {
       dispatch(setIsMessage(true));
       dispatch(setMessage("Please complete all the required fields"));
@@ -71,103 +76,104 @@ const SignUpPage = () => {
       username,
       email,
       password,
-      address: "",
-      phoneNumber: "",
     };
-    postUser.mutate(newUser);
-    setUsername("");
-    setEmail("");
-    setPassword("");
-    setComfirmPassword("");
-    dispatch(setIsMessage(true));
-    dispatch(setMessage("SignUp successfully"));
-    dispatch(setColor("success"));
+    postUser.mutate(newUser, {
+      onSuccess: () => {
+        listUser.refetch();
+        dispatch(setIsMessage(true));
+        dispatch(setMessage("SignUp successfully"));
+        dispatch(setColor("success"));
+        reset();
+      },
+    });
   };
 
   return (
     <Div>
       <ToastMessageComponent />
-      <AuthForm>
-        <AuthHeader variant='h5'>Sign Up</AuthHeader>
-        <AuthBody>
-          <TextField
-            variant='outlined'
-            label='UserName'
-            size='small'
-            fullWidth
-            value={username}
-            onChange={(e: any) => setUsername(e.target.value)}
-          />
-          <TextField
-            type='email'
-            variant='outlined'
-            label='Email'
-            size='small'
-            fullWidth
-            value={email}
-            onChange={(e: any) => setEmail(e.target.value)}
-          />
-          {showPassword ? (
-            <Box sx={stylePassword}>
-              <TextField
-                variant='outlined'
-                label='Password'
-                size='small'
-                fullWidth
-                value={password}
-                onChange={(e: any) => setPassword(e.target.value)}
-              />
-              <TextField
-                variant='outlined'
-                label='Comfirm Password'
-                size='small'
-                fullWidth
-                value={comfirmPassword}
-                onChange={(e: any) => setComfirmPassword(e.target.value)}
-              />
-            </Box>
-          ) : (
-            <Box sx={stylePassword}>
-              <TextField
-                type='password'
-                variant='outlined'
-                label='Password'
-                size='small'
-                fullWidth
-                value={password}
-                onChange={(e: any) => setPassword(e.target.value)}
-              />
-              <TextField
-                type='password'
-                variant='outlined'
-                label='Comfirm Password'
-                size='small'
-                fullWidth
-                value={comfirmPassword}
-                onChange={(e: any) => setComfirmPassword(e.target.value)}
-              />
-            </Box>
-          )}
-          <FormGroup>
-            <FormControlLabel
-              control={
-                <Checkbox onClick={() => setShowPassword(!showPassword)} />
-              }
-              label='Show Password'
+      <AuthForm onSubmit={handleSubmit(handleSignUp)}>
+        <SignUpFormLeft>
+          <AuthBody>
+            <TextField
+              variant='outlined'
+              label='UserName'
+              size='small'
+              fullWidth
+              {...register("username")}
             />
-          </FormGroup>
-        </AuthBody>
-        <AuthFooter>
-          <Button variant='contained' color='success' onClick={handleSignUp}>
-            Sign Up
-          </Button>
-          <Typography
-            variant='body1'
-            sx={{ display: "flex", alignItems: "center" }}>
-            {`If you have account`}
-            <Button onClick={() => router.push("/auth/login")}>Login</Button>
+            <TextField
+              type='email'
+              variant='outlined'
+              label='Email'
+              size='small'
+              fullWidth
+              {...register("email")}
+            />
+            {showPassword ? (
+              <Box sx={stylePassword}>
+                <TextField
+                  variant='outlined'
+                  label='Password'
+                  size='small'
+                  fullWidth
+                  {...register("password")}
+                />
+                <TextField
+                  variant='outlined'
+                  label='Comfirm Password'
+                  size='small'
+                  fullWidth
+                  {...register("comfirmPassword")}
+                />
+              </Box>
+            ) : (
+              <Box sx={stylePassword}>
+                <TextField
+                  type='password'
+                  variant='outlined'
+                  label='Password'
+                  size='small'
+                  fullWidth
+                  {...register("password")}
+                />
+                <TextField
+                  type='password'
+                  variant='outlined'
+                  label='Comfirm Password'
+                  size='small'
+                  fullWidth
+                  {...register("comfirmPassword")}
+                />
+              </Box>
+            )}
+            <FormGroup>
+              <FormControlLabel
+                control={
+                  <Checkbox onClick={() => setShowPassword(!showPassword)} />
+                }
+                label='Show Password'
+              />
+            </FormGroup>
+          </AuthBody>
+          <AuthFooter>
+            <Button type='submit' variant='contained' color='primary'>
+              Sign Up
+            </Button>
+          </AuthFooter>
+        </SignUpFormLeft>
+
+        <SignUpFormRight>
+          <AuthHeader variant='h5'>Sign Up</AuthHeader>
+          <Typography variant='body1' sx={{ textAlign: "center" }}>
+            {`SignIn if you are already a member`}
           </Typography>
-        </AuthFooter>
+          <Button
+            variant='outlined'
+            sx={{ color: "#ffffff" }}
+            onClick={() => router.push("/auth/login")}>
+            Login
+          </Button>
+        </SignUpFormRight>
       </AuthForm>
     </Div>
   );

@@ -1,102 +1,83 @@
 /** @format */
 "use client";
 
+import { Box, Button, CardContent, CardMedia, Typography } from "@mui/material";
 import {
-  Box,
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  Typography,
-} from "@mui/material";
-import { ImageProduct, ListProducts } from "../common/assets/productpage";
-import Link from "next/link";
+  ButtonLearnMore,
+  CardProduct,
+  ListProducts,
+  styleImageProduct,
+} from "../common/assets/productpage";
 import { useEffect, useState } from "react";
-import SpinnerComponent from "@/components/spinnercomponent";
-import { useSelector } from "react-redux";
+import { IProduct } from "@/common/interfaces/product.interface";
+import { useRouter } from "next/navigation";
 import { useGetProductData } from "@/products/common/hooks";
-import { RootState } from "@/app/store";
-import { IProduct } from "@/products/common/interface";
+import SpinnerComponent from "@/components/spinnercomponent";
 
-const ListProductElement = () => {
-  const [products, setProducts] = useState([]);
-  const searchNameProduct = useSelector(
-    (state: RootState) => state.search.searchName
-  );
-  const selectedType = useSelector(
-    (state: RootState) => state.search.selectedType
-  );
-  const selectedPrice = useSelector(
-    (state: RootState) => state.search.selectedPrice
-  );
+const ListProductElement = ({ listValue }: any) => {
+  const [products, setProducts] = useState<IProduct[]>([]);
+  const [visibleProducts, setVisibleProducts] = useState<IProduct[]>([]);
+  const [visibleCount, setVisibleCount] = useState(8);
+  const router = useRouter();
 
-  const getData = useGetProductData();
+  const { data, isLoading } = useGetProductData();
 
   useEffect(() => {
-    if (!getData.data) return;
-    const filteredProducts = getData.data.filter((product: any) => {
-      const isTypeMatch =
-        selectedType === "all" || product.category.includes(selectedType);
+    if (listValue === null) {
+      setProducts(data);
+    } else {
+      setProducts(listValue);
+    }
+  }, [data, listValue]);
 
-      let isPriceMatch = true;
+  useEffect(() => {
+    setVisibleProducts(products?.slice(0, visibleCount));
+  }, [products, visibleCount]);
 
-      switch (selectedPrice) {
-        case "0-100":
-          isPriceMatch = product.price <= 100;
-          break;
-        case "100-500":
-          isPriceMatch = product.price > 100 && product.price <= 500;
-          break;
-        case "500-1000":
-          isPriceMatch = product.price > 500 && product.price <= 1000;
-          break;
-        case "1000-1500":
-          isPriceMatch = product.price > 1000 && product.price <= 1500;
-          break;
-        case "1500-2000":
-          isPriceMatch = product.price > 1500 && product.price <= 2000;
-          break;
-        case ">2000":
-          isPriceMatch = product.price > 2000;
-          break;
-      }
+  const handleDetail = (id: string) => {
+    router.push(`product/${id}`);
+  };
 
-      return (
-        product.title.toLowerCase().includes(searchNameProduct.toLowerCase()) &&
-        isTypeMatch &&
-        isPriceMatch
-      );
-    });
-    setProducts(filteredProducts);
-  }, [searchNameProduct, selectedType, selectedPrice, getData.data]);
+  const handleShowMore = () => {
+    setVisibleCount((prevCount) => prevCount + 8);
+  };
 
-  if (getData.isLoading) {
-    return <SpinnerComponent />;
+  if (isLoading) {
+    <SpinnerComponent />;
   }
 
   return (
     <Box>
-      {products.length > 0 ? (
-        <ListProducts>
-          {products?.map((item: IProduct, index: number) => {
-            return (
-              <Card sx={{ width: 300 }} key={index}>
-                <ImageProduct image={item.thumbnail} />
-                <CardContent>
-                  <Typography gutterBottom variant='h5' component='div'>
-                    {item.title}
-                  </Typography>
-                  <Typography variant='h6'>$ {item.price}</Typography>
-                </CardContent>
-                <CardActions>
-                  <Link href={`product/${item.id}`}>
-                    <Button size='small'>Detail</Button>
-                  </Link>
-                </CardActions>
-              </Card>
-            );
-          })}
-        </ListProducts>
+      {visibleProducts && visibleProducts.length > 0 ? (
+        <Box>
+          <ListProducts>
+            {visibleProducts.map((item: IProduct, index: number) => {
+              return (
+                <CardProduct key={index} onClick={() => handleDetail(item.id)}>
+                  <CardMedia
+                    component='img'
+                    image={item.thumbnail}
+                    alt={item?.title}
+                    sx={styleImageProduct}
+                  />
+                  <CardContent>
+                    <Typography gutterBottom variant='h5' component='div'>
+                      {item?.title}
+                    </Typography>
+                    <Typography variant='h6'>$ {item.price}</Typography>
+                  </CardContent>
+                </CardProduct>
+              );
+            })}
+          </ListProducts>
+          {visibleCount < products?.length && (
+            <ButtonLearnMore>
+              <Button variant='contained' onClick={handleShowMore}>
+                Learn More
+              </Button>
+            </ButtonLearnMore>
+          )}
+        </Box>
       ) : (
         <ListProducts>
           <Typography variant='h5'>Products Not Found</Typography>

@@ -5,7 +5,7 @@ import Snackbar from "@mui/material/Snackbar";
 import CloseIcon from "@mui/icons-material/Close";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/app/store";
-import { setIsMessage } from "@/auth/common/redux/userSlice";
+import { setIsMessage } from "@/common/redux/userSlice";
 
 export default function ToastMessageComponent() {
   const showMessage: boolean = useSelector(

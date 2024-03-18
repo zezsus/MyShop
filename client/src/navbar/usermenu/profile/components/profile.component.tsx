@@ -6,12 +6,12 @@ import UpdateUserElement from "../elements/updateuser.element";
 import GetUserInfoElement from "../elements/getuserinfo.element";
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/store";
-import { useGetUserData } from "@/auth/common/hook";
 import { useEffect, useState } from "react";
-import { IUser } from "@/auth/common/interfaces";
 import ChangePassWordComponent from "./changepassword.component";
 import ToastMessageComponent from "@/components/toasmessage.component";
 import { Box } from "@mui/material";
+import { IUser } from "@/common/interfaces/user.interface";
+import { useGetUserData } from "@/common/hook/user.hook";
 
 const ProfileComponent = () => {
   const isUpdateUser: boolean = useSelector(

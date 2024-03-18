@@ -7,7 +7,7 @@ import {
   AuthForm,
   AuthHeader,
   Div,
-} from "@/auth/common/assets/authstyle";
+} from "@/auth/common/assets/auth.style";
 import {
   Button,
   Checkbox,
@@ -18,28 +18,28 @@ import {
 } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { useGetUserData } from "../common/hook";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/app/store";
+import { useGetUserData } from "@/common/hook/user.hook";
 import {
   setColor,
   setIsLogin,
   setIsMessage,
   setMessage,
-} from "../common/redux/userSlice";
+} from "@/common/redux/userSlice";
 import ToastMessageComponent from "@/components/toasmessage.component";
+import { FormLoginLeft, FormLoginRight } from "../common/assets/login.style";
+import { FieldValues, useForm } from "react-hook-form";
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-
+  const { register, handleSubmit, reset } = useForm();
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const getDataUser = useGetUserData();
 
-  const handleLogin = async () => {
-    if (!email || !password) {
+  const handleLogin = async (data: FieldValues) => {
+    if (!data.email || !data.password) {
       dispatch(setIsMessage(true));
       dispatch(setMessage("Please complete all the required fields"));
       dispatch(setColor("error"));
@@ -48,7 +48,8 @@ const LoginPage = () => {
 
     if (getDataUser.data) {
       const checkUser = getDataUser.data?.filter(
-        (user: any) => user.email === email && user.password === password
+        (user: any) =>
+          user.email === data.email && user.password === data.password
       );
 
       if (checkUser.length === 0) {
@@ -63,64 +64,77 @@ const LoginPage = () => {
         localStorage.setItem("user", JSON.stringify(checkUser));
       }
       dispatch(setIsLogin(true));
+      reset();
     }
   };
 
   return (
     <Div>
       <ToastMessageComponent />
-      <AuthForm>
-        <AuthHeader variant='h5'>Login In</AuthHeader>
-        <AuthBody>
-          <TextField
-            type='email'
-            variant='outlined'
-            label='Email'
-            size='small'
-            fullWidth
-            value={email}
-            onChange={(e: any) => setEmail(e.target.value)}
-          />
-          {showPassword ? (
-            <TextField
-              variant='outlined'
-              label='Password'
-              size='small'
-              fullWidth
-              value={password}
-              onChange={(e: any) => setPassword(e.target.value)}
-            />
-          ) : (
-            <TextField
-              type='password'
-              variant='outlined'
-              label='Password'
-              size='small'
-              fullWidth
-              value={password}
-              onChange={(e: any) => setPassword(e.target.value)}
-            />
-          )}
-          <FormGroup>
-            <FormControlLabel
-              control={
-                <Checkbox onClick={() => setShowPassword(!showPassword)} />
-              }
-              label='Show Password'
-            />
-          </FormGroup>
-        </AuthBody>
-        <AuthFooter>
-          <Button variant='contained' color='success' onClick={handleLogin}>
-            Login
-          </Button>
+      <AuthForm onSubmit={handleSubmit(handleLogin)}>
+        <FormLoginLeft>
+          <AuthHeader variant='h5'>Sign In</AuthHeader>
           <Typography
             variant='body1'
-            sx={{ display: "flex", alignItems: "center" }}>
-            {`If you don't account`}
-            <Button onClick={() => router.push("/auth/signup")}>SignUp</Button>
+            component={"div"}
+            sx={{ textAlign: "center" }}>
+            {`SignUp an account if you are a new member`}
           </Typography>
-        </AuthFooter>
+          <Button
+            variant='outlined'
+            onClick={() => router.push("/auth/signup")}
+            sx={{ color: "white" }}>
+            Sign Up
+          </Button>
+        </FormLoginLeft>
+        <FormLoginRight>
+          <AuthBody>
+            <TextField
+              type='email'
+              variant='outlined'
+              label='Email'
+              size='small'
+              fullWidth
+              {...register("email")}
+            />
+            {showPassword ? (
+              <TextField
+                variant='outlined'
+                label='Password'
+                size='small'
+                fullWidth
+                {...register("password")}
+              />
+            ) : (
+              <TextField
+                type='password'
+                variant='outlined'
+                label='Password'
+                size='small'
+                fullWidth
+                {...register("password")}
+              />
+            )}
+
+            <FormGroup>
+              <FormControlLabel
+                control={
+                  <Checkbox onClick={() => setShowPassword(!showPassword)} />
+                }
+                label='Show Password'
+              />
+            </FormGroup>
+          </AuthBody>
+          <AuthFooter>
+            <Button
+              type='submit'
+              sx={{ width: 150 }}
+              variant='contained'
+              color='primary'>
+              sign in
+            </Button>
+          </AuthFooter>
+        </FormLoginRight>
       </AuthForm>
     </Div>
   );

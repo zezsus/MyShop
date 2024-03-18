@@ -12,6 +12,19 @@ export const formStyle = {
   borderRadius: "0.5rem",
 };
 
+export const UserForm = styled("form")({
+  width: 500,
+  minHeight: 300,
+  border: "1px solid gray",
+  borderRadius: "10px",
+  boxShadow: "10px",
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "center",
+  paddingLeft: "1rem",
+  paddingRight: "1rem",
+});
+
 export const FormHeader = styled(Box)({
   display: "flex",
   justifyContent: "center",

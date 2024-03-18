@@ -8,6 +8,8 @@ export const useGetListCategory = () => {
   return useQuery({
     queryKey: ["getCategory"],
     queryFn: getListCategory,
+    staleTime: 0,
+    cacheTime: 2 * 60 * 1000,
   });
 };
 

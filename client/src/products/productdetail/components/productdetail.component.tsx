@@ -3,12 +3,17 @@
 
 import SpinnerComponent from "@/components/spinnercomponent";
 import { useGetProductDetailData } from "@/products/common/hooks";
-import { Box, CardActions, Container, Typography } from "@mui/material";
+import {
+  Box,
+  CardActions,
+  CardMedia,
+  Container,
+  Typography,
+} from "@mui/material";
 import { ContentProduct, ProductDetail } from "../common/assets";
 import ContentProductElement from "../elements/contentproduct.element";
 import ActionElement from "../elements/action.element";
 import ButtonBackProductDetailElement from "@/products/productdetail/elements/buttonbackproductdetail.element";
-import ImageProductElement from "@/products/elements/imageproduct.element";
 import ToastMessageComponent from "@/components/toasmessage.component";
 
 const ProductDetailComponent = ({ idProduct }: any) => {
@@ -20,14 +25,15 @@ const ProductDetailComponent = ({ idProduct }: any) => {
   return (
     <Box>
       <ToastMessageComponent />
+      <ButtonBackProductDetailElement />
       <Container>
-        <ButtonBackProductDetailElement />
         <ProductDetail>
           <ContentProduct>
-            <ImageProductElement
-              imageProduct={getDataProdutDetail.data?.thumbnail}
-              titleProduct={getDataProdutDetail.data?.title}
-              style={{ maxWidth: "400px" }}
+            <CardMedia
+              component='img'
+              image={getDataProdutDetail.data?.thumbnail}
+              alt={getDataProdutDetail.data?.title}
+              sx={{ maxWidth: 400 }}
             />
             <Box>
               <ContentProductElement
@@ -42,6 +48,15 @@ const ProductDetailComponent = ({ idProduct }: any) => {
             </Box>
           </ContentProduct>
         </ProductDetail>
+        <Box mt={2}>
+          <Typography variant='h4'>
+            Description
+            <hr />
+          </Typography>
+          <Typography variant='body1'>
+            {getDataProdutDetail.data?.description}
+          </Typography>
+        </Box>
       </Container>
     </Box>
   );

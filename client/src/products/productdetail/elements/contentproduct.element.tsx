@@ -1,25 +1,29 @@
 /** @format */
 
-import { CardContent, Typography } from "@mui/material";
-import StarIcon from "@mui/icons-material/Star";
-import { Rating } from "../common/assets";
+import { CardContent, Rating, Typography } from "@mui/material";
+import { RatingNumber } from "../common/assets";
 
 const ContentProductElement = (props: any) => {
   return (
     <CardContent>
-      <Typography gutterBottom variant='h5' component='div'>
+      <Typography
+        gutterBottom
+        variant='h5'
+        component='div'
+        sx={{ textTransform: "capitalize" }}>
         {props.titleProduct}
       </Typography>
-      <Typography variant='body2' color='text.secondary'>
-        {props.descriptionProduct}
-      </Typography>
-      <Typography gutterBottom variant='h6' component='div'>
+      <Typography
+        gutterBottom
+        variant='h4'
+        component='div'
+        sx={{ color: "#ee4d2d" }}>
         ${props.priceProduct}
       </Typography>
-      <Rating variant='body2' color='text.secondary'>
-        <StarIcon color='warning' />
+      <RatingNumber variant='body1'>
         {props.ratingProduct}
-      </Rating>
+        <Rating value={props.ratingProduct} precision={0.1} readOnly />
+      </RatingNumber>
     </CardContent>
   );
 };

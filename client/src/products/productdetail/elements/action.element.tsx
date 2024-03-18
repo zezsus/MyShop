@@ -2,22 +2,16 @@
 "use client";
 
 import { AppDispatch } from "@/app/store";
-import {
-  useGetCartItem,
-  usePostCartItem,
-} from "@/products/cart/common/hooks/cartproducts";
-import { ICartItem, IProduct } from "@/products/common/interface";
+import { useGetCartItem, usePostCartItem } from "@/common/hook/cart.hook";
+import { ICartItem } from "@/common/interfaces/cart.interface";
+import { IProduct } from "@/common/interfaces/product.interface";
+import { IUser } from "@/common/interfaces/user.interface";
+import { setColor, setIsMessage, setMessage } from "@/common/redux/userSlice";
 import { setBuyItem } from "@/products/common/redux/productSlice";
 import { Box, Button } from "@mui/material";
 import { useRouter } from "next/navigation";
-import { useDispatch } from "react-redux";
-import {
-  setColor,
-  setIsMessage,
-  setMessage,
-} from "@/auth/common/redux/userSlice";
 import { useEffect, useState } from "react";
-import { IUser } from "@/auth/common/interfaces";
+import { useDispatch } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 
 const ActionElement = ({ dataProduct }: any) => {
@@ -47,11 +41,11 @@ const ActionElement = ({ dataProduct }: any) => {
       userId: userId,
     };
 
-    const checkCartItem = getCartItem.data.filter(
+    const checkCartItem = getCartItem.data?.filter(
       (item: any) => item.userId === userId && item.title === newCartItem.title
     );
 
-    if (checkCartItem.length > 0) {
+    if (checkCartItem?.length > 0) {
       dispatch(setIsMessage(true));
       dispatch(setMessage("Products already in the cart."));
       dispatch(setColor("error"));

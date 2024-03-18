@@ -4,7 +4,9 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.scss";
 import Providers from "./providers/providers";
-import NavbarComponent from "@/navbar/components/navbarcomponent";
+import NavbarComponent from "@/navbar/navcontent/components/navbarcomponent";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
